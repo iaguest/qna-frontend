@@ -26,7 +26,8 @@ function App() {
         <Routes>
           <Route path="" element={<HomePage />} />
           <Route path="search" element={<SearchPage />} />
-          <Route path="ask"
+          <Route
+            path="ask"
             element={
               <React.Suspense
                 fallback={
