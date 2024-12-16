@@ -1,29 +1,12 @@
-import { Page } from './Page';
-import { StatusText } from './Styles';
-import { useAuth } from './Auth';
+import React from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 
-type SignoutAction = 'signout' | 'signout-callback';
+export const SignOutPage: React.FC = () => {
+  const { logout } = useAuth0();
 
-interface Props {
-  action: SignoutAction;
-}
+  React.useEffect(() => {
+    logout({ logoutParams: { returnTo: window.location.origin } });
+  }, [logout]);
 
-export const SignOutPage = ({ action }: Props) => {
-  let message = 'Signing out...';
-
-  const { signOut } = useAuth();
-
-  switch (action) {
-    case 'signout':
-      signOut();
-      break;
-    case 'signout-callback':
-      message = 'You successfully signed out!';
-      break;
-  }
-  return (
-    <Page title="Sign out">
-      <StatusText>{message}</StatusText>
-    </Page>
-  );
+  return <div>Signing out...</div>;
 };

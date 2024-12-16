@@ -9,13 +9,18 @@ import { SignInPage } from './SignInPage';
 import { fontFamily, fontSize, gray2 } from './Styles';
 import { NotFoundPage } from './NotFoundPage';
 import { QuestionPage } from './QuestionPage';
-import { AuthProvider } from './Auth';
+import { Auth0Provider } from '@auth0/auth0-react';
 import { SignOutPage } from './SignOutPage';
+import { authSettings } from './AppSettings';
 const AskPage = React.lazy(() => import('./AskPage'));
 
 function App() {
   return (
-    <AuthProvider>
+    <Auth0Provider
+      domain={authSettings.domain}
+      clientId={authSettings.clientId}
+      authorizationParams={{ redirect_uri: window.location.origin }}
+    >
       <BrowserRouter>
         <div
           // this is a tagged template literal
@@ -48,22 +53,14 @@ function App() {
                 </React.Suspense>
               }
             />
-            <Route path="signin" element={<SignInPage action="signin" />} />
-            <Route
-              path="/signin-callback"
-              element={<SignInPage action="signin-callback" />}
-            />
-            <Route path="signout" element={<SignOutPage action="signout" />} />
-            <Route
-              path="/signout-callback"
-              element={<SignOutPage action="signout-callback" />}
-            />
+            <Route path="signin" element={<SignInPage />} />
+            <Route path="signout" element={<SignOutPage />} />
             <Route path="questions/:questionId" element={<QuestionPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </div>
       </BrowserRouter>
-    </AuthProvider>
+    </Auth0Provider>
   );
 }
 

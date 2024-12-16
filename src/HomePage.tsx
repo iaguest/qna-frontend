@@ -6,7 +6,7 @@ import { PageTitle } from './PageTitle';
 import { QuestionList } from './QuestionList';
 import { PrimaryButton } from './Styles';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from './Auth';
+import { useAuth0 } from '@auth0/auth0-react';
 
 import { getUnansweredQuestions, QuestionData } from './QuestionsData';
 
@@ -31,7 +31,7 @@ export const HomePage = () => {
   const handleAskQuestionClick = () => {
     navigate('ask');
   };
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth0();
   return (
     <Page>
       <div

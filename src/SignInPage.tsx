@@ -1,21 +1,13 @@
-import { Page } from './Page';
-import { StatusText } from './Styles';
-import { useAuth } from './Auth';
+import React, { useEffect } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 
-type SignInAction = 'signin' | 'signin-callback';
+export const SignInPage: React.FC = () => {
+  const { loginWithRedirect } = useAuth0();
 
-interface Props {
-  action: SignInAction;
-}
+  useEffect(() => {
+    // Automatically trigger login when this component mounts
+    loginWithRedirect();
+  }, [loginWithRedirect]);
 
-export const SignInPage = ({ action }: Props) => {
-  const { signIn } = useAuth();
-  if (action === 'signin') {
-    signIn();
-  }
-  return (
-    <Page title="Sign In">
-      <StatusText>Signing in ...</StatusText>
-    </Page>
-  );
+  return <div>Redirecting to sign in...</div>;
 };
