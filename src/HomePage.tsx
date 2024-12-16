@@ -6,35 +6,32 @@ import { PageTitle } from './PageTitle';
 import { QuestionList } from './QuestionList';
 import { PrimaryButton } from './Styles';
 import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import {
-  gettingUnansweredQuestionsAction,
-  gotUnansweredQuestionsAction,
-  AppState,
-} from './Store';
-import { getUnansweredQuestions } from './QuestionsData';
+import { useAuth } from './Auth';
+
+import { getUnansweredQuestions, QuestionData } from './QuestionsData';
 
 export const HomePage = () => {
-  const dispatch = useDispatch();
-  const questions = useSelector(
-    (state: AppState) => state.questions.unanswered,
-  );
-  const questionsLoading = useSelector(
-    (state: AppState) => state.questions.loading,
-  );
+  const [questions, setQuestions] = React.useState<QuestionData[]>([]);
+  const [questionsLoading, setQuestionsLoading] = React.useState(true);
   React.useEffect(() => {
+    let cancelled = false;
     const doGetUnansweredQuestions = async () => {
-      dispatch(gettingUnansweredQuestionsAction());
       const unansweredQuestions = await getUnansweredQuestions();
-      dispatch(gotUnansweredQuestionsAction(unansweredQuestions));
+      if (!cancelled) {
+        setQuestions(unansweredQuestions);
+        setQuestionsLoading(false);
+      }
     };
     doGetUnansweredQuestions();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => {
+      cancelled = true;
+    };
   }, []);
   const navigate = useNavigate();
   const handleAskQuestionClick = () => {
     navigate('ask');
   };
+  const { isAuthenticated } = useAuth();
   return (
     <Page>
       <div
@@ -45,9 +42,11 @@ export const HomePage = () => {
         `}
       >
         <PageTitle>Unanswered Questions</PageTitle>
-        <PrimaryButton onClick={handleAskQuestionClick}>
-          Ask a question
-        </PrimaryButton>
+        {isAuthenticated && (
+          <PrimaryButton onClick={handleAskQuestionClick}>
+            Ask a question
+          </PrimaryButton>
+        )}
       </div>
       {questionsLoading ? (
         <div>Loading...</div>
