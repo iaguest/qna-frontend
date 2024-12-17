@@ -12,6 +12,7 @@ import { QuestionPage } from './QuestionPage';
 import { Auth0Provider } from '@auth0/auth0-react';
 import { SignOutPage } from './SignOutPage';
 import { authSettings } from './AppSettings';
+import { AuthorizedPage } from './AuthorizedPage';
 const AskPage = React.lazy(() => import('./AskPage'));
 
 function App() {
@@ -49,7 +50,9 @@ function App() {
                     </div>
                   }
                 >
-                  <AskPage />
+                  <AuthorizedPage>
+                    <AskPage />
+                  </AuthorizedPage>
                 </React.Suspense>
               }
             />
