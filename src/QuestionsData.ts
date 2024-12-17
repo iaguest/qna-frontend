@@ -133,13 +133,20 @@ export const searchQuestions = async (
 };
 
 export const postQuestion = async (
+  accessToken: string,
   question: PostQuestionData,
 ): Promise<QuestionData | undefined> => {
-  await wait(500);
-  const questionId = Math.max(...questions.map((q) => q.questionId)) + 1;
-  const newQuestion: QuestionData = { ...question, questionId, answers: [] };
-  questions.push(newQuestion);
-  return newQuestion;
+  const result = await http<QuestionDataFromServer, PostQuestionData>({
+    path: '/questions',
+    method: 'post',
+    body: question,
+    accessToken,
+  });
+  if (result.ok && result.body) {
+    return mapQuestionFromServer(result.body);
+  } else {
+    return undefined;
+  }
 };
 
 export const postAnswer = async (

@@ -13,6 +13,8 @@ import {
 } from './Styles';
 import { useForm } from 'react-hook-form';
 import { postQuestion } from './QuestionsData';
+import { useAuth0 } from '@auth0/auth0-react';
+import { authSettings } from './AppSettings';
 
 type FormData = {
   title: string;
@@ -30,8 +32,15 @@ export const AskPage = () => {
   const [successfullySubmitted, setSuccessfullySubmitted] =
     React.useState(false);
 
+  const { getAccessTokenSilently } = useAuth0();
+
   const submitForm = async (data: FormData) => {
-    const result = await postQuestion({
+    const accessToken = await getAccessTokenSilently({
+      authorizationParams: {
+        audience: authSettings.authorizationParams.audience,
+      },
+    });
+    const result = await postQuestion(accessToken, {
       title: data.title,
       content: data.content,
       userName: 'Fred',
