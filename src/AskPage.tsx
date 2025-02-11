@@ -21,7 +21,7 @@ type FormData = {
   content: string;
 };
 
-export const AskPage = () => {
+export const AskPage = async () => {
   const {
     register,
     formState,
@@ -33,13 +33,14 @@ export const AskPage = () => {
     React.useState(false);
 
   const { getAccessTokenSilently } = useAuth0();
+  const accessToken = await getAccessTokenSilently({
+    authorizationParams: {
+      cacheMode: 'off',
+      audience: authSettings.authorizationParams.audience,
+    },
+  });
 
   const submitForm = async (data: FormData) => {
-    const accessToken = await getAccessTokenSilently({
-      authorizationParams: {
-        audience: authSettings.authorizationParams.audience,
-      },
-    });
     const result = await postQuestion(accessToken, {
       title: data.title,
       content: data.content,
